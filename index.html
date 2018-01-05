@@ -6,6 +6,8 @@
     <meta charset="utf-8">
     <title>Place search pagination</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,9 +17,11 @@
         <h2>Results</h2>
         <ul id="places"></ul>
     </div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY_ypq2caJAIu5DoJ9UcXjbTZn94iwYw&libraries=places&callback=initMap"
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY_ypq2caJAIu5DoJ9UcXjbTZn94iwYw&libraries=places&callback=map.initMap"
         async defer></script>
-    <script src="main.js"></script>
+    <script src="map.js"></script>
 </body>
 
 </html>
+<!-- @click="searchPlaces" -->
