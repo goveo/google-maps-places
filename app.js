@@ -1,5 +1,5 @@
-var map = new Vue({
-    el: '#map',
+var app = new Vue({
+    el: '#app',
     data: {
         map: {},
         service: {},
@@ -19,7 +19,7 @@ var map = new Vue({
             this.service = new google.maps.places.PlacesService(this.map);
 
             google.maps.event.addListener(this.map, 'click', function (event) {
-                map.searchPlaces(event);
+                app.searchPlaces(event);
             });
         },
         searchPlaces: function (event) {
@@ -43,15 +43,13 @@ var map = new Vue({
             }
         },
         createMarkers: function (places) {
-            console.log('createMarkers');
-            console.log('markers : ', this.markers);
+            this.placesList = []; // null
             console.log('placesList : ', this.placesList);
 
             var bounds = new google.maps.LatLngBounds();
 
             var placesListEl = document.getElementById('places');
-            placesListEl.innerHTML = '';
-
+            
             for (var i = 0, place; place = places[i]; i++) {
                 var image = {
                     url: place.icon,
@@ -68,14 +66,14 @@ var map = new Vue({
                     position: place.geometry.location
                 });
                 let currnetPlace = {
-                    image: image,
+                    position: place.geometry.location,
                     name: place.name
                 }
 
                 this.markers.push(marker);
                 this.placesList.push(currnetPlace);
 
-                placesListEl.innerHTML += '<li>' + place.name + '</li>';
+                // placesListEl.innerHTML += '<li>' + place.name + '</li>';
 
                 bounds.extend(place.geometry.location);
             }
@@ -92,6 +90,9 @@ var map = new Vue({
         deleteAllMarkers: function () {
             this.clearMarkers();
             this.markers = [];
+        },
+        processCafe: function (place) {
+            alert(place.name);
         }
     }
 });

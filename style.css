@@ -13,6 +13,11 @@
       padding: 0;
   }
 
+  #app {
+      width: 100%;
+      height: 100%;
+  }
+
   #right-panel {
       font-family: 'Roboto', 'sans-serif';
       line-height: 30px;

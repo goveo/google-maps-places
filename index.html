@@ -12,15 +12,23 @@
 </head>
 
 <body>
-    <div id="map"></div>
-    <div id="right-panel">
-        <h2>Results</h2>
-        <ul id="places"></ul>
+    <div id="app">
+        <div id="map"></div>
+        <div id="right-panel">
+            <h2>Results</h2>
+
+            <ul id="places">
+                <div v-for="place in placesList">
+                    <li @click="processCafe(place)">{{place.name}}</li>
+                </div>
+            </ul>
+
+        </div>
     </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY_ypq2caJAIu5DoJ9UcXjbTZn94iwYw&libraries=places&callback=map.initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY_ypq2caJAIu5DoJ9UcXjbTZn94iwYw&libraries=places&callback=app.initMap"
         async defer></script>
-    <script src="map.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
