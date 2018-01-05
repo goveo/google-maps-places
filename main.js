@@ -86,9 +86,12 @@ function createMarkers(places) {
         }
         placesList.push(currnetPlace);
 
-        placesListEl.innerHTML += '<li class="list-item" param_id="' + i + '">' + place.name + '</li>';
+        // placesListEl.innerHTML += '<li class="list-item" param_id="' + i + '">' + place.name + '</li>';
 
         bounds.extend(place.geometry.location);
+    }
+    for (var i = 0; i < placesList.length; i++) {
+    placesListEl.innerHTML += '<li class="list-item" param_id="' + i + '">' + placesList[i].name + '</li>';
     }
     map.fitBounds(bounds);
 }
@@ -113,4 +116,5 @@ $("#places").on("click", ".list-item", function(event){
     let currentPlace = placesList[id];
     // console.log(currentPlace.position.lat());
     console.log(currentPlace);
+    alert(currentPlace.name, currentPlace.position.lat(), currentPlace.position.lng());
 });
