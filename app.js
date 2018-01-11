@@ -3,7 +3,8 @@ var app = new Vue({
     data: {
         map: {},
         service: {},
-        placesList: [],
+        bounds: {},
+        currentPlace: {},
         markers: [],
         pyrmont: {
             lat: 50.128718762972554,
@@ -20,60 +21,60 @@ var app = new Vue({
 
             var input = document.getElementById('pac-input');
             var searchBox = new google.maps.places.SearchBox(input);
+            this.bounds = new google.maps.LatLngBounds();
             this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
             this.map.addListener('bounds_changed', function () {
+                console.log('bounds changed');
                 searchBox.setBounds(app.map.getBounds());
             });
             searchBox.addListener('places_changed', function () {
                 var places = searchBox.getPlaces();
-                app.changePlaces(places);
-                console.log('place changed');
+                if (places.length != 0) {
+                    app.changePlace(places[0]); //beacause all of places in search are unique
+                    console.log('place changed');
+                }
             });
         },
-        changePlaces: function (places) {
-            if (places.length == 0) {
+        changePlace: function (place) {
+            app.deleteAllMarkers();
+            app.addPlaceOnMap(place);
+            app.map.fitBounds(app.bounds);
+        },
+        addPlaceOnMap: function (place) {
+            if (!place.geometry) {
+                console.log("Returned place contains no geometry");
                 return;
             }
-            app.deleteAllMarkers();
-            var bounds = new google.maps.LatLngBounds();
-            places.forEach(function (place) {
-                if (!place.geometry) {
-                    console.log("Returned place contains no geometry");
-                    return;
-                }
-                var icon = {
-                    url: place.icon,
-                    size: new google.maps.Size(71, 71),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34),
-                    scaledSize: new google.maps.Size(25, 25)
-                };
-                let marker = new google.maps.Marker({
-                    map: app.map,
-                    icon: icon,
-                    title: place.name,
-                    position: place.geometry.location
-                });
-                app.markers.push(marker);
-
-                app.placesList.push({
-                    position: place.geometry.location,
-                    name: place.name
-                });
-                
-                marker.addListener('click', function() {
-                    app.map.setCenter(marker.getPosition());
-                    alert('Modal window with ' + place.name);
-                  });
-
-                if (place.geometry.viewport) {
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
+            var icon = {
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(25, 25)
+            };
+            let marker = new google.maps.Marker({
+                map: app.map,
+                icon: icon,
+                title: place.name,
+                position: place.geometry.location
             });
-            app.map.fitBounds(bounds);
+            app.currentPlace = {
+                position: place.geometry.location,
+                name: place.name
+            };
+            
+            marker.addListener('click', function () {
+                app.map.setCenter(marker.getPosition());
+                alert('Modal window with ' + place.name);
+            });
+            app.markers.push(marker);
+
+            if (place.geometry.viewport) {
+                app.bounds.union(place.geometry.viewport);
+            } else {
+                app.bounds.extend(place.geometry.location);
+            }
         },
         setMapOnAll: function (map) {
             for (var i = 0; i < this.markers.length; i++) {
