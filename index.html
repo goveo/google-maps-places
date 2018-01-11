@@ -2,34 +2,23 @@
 <html>
 
 <head>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <title>Place search pagination</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://unpkg.com/vue"></script>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+	<meta charset="utf-8">
+	<title>Places</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="https://unpkg.com/vue"></script>
 
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div id="app">
-        <div id="map"></div>
-        <div id="right-panel">
-            <h2>Results</h2>
-
-            <ul id="places">
-                <div v-for="place in placesList">
-                    <li @click="processCafe(place)">{{place.name}}</li>
-                </div>
-            </ul>
-
-        </div>
-    </div>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY_ypq2caJAIu5DoJ9UcXjbTZn94iwYw&libraries=places&callback=app.initMap"
-        async defer></script>
-    <script src="app.js"></script>
+	<div id="app">
+		<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+		<div id="map"></div>
+		<!-- Replace the value of the key parameter with your own API key. -->
+	</div>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtY_ypq2caJAIu5DoJ9UcXjbTZn94iwYw&libraries=places&callback=app.initMap"
+	    async defer></script>
+	<script src="app.js"></script>
+	<script src="search.js"></script>
 </body>
-
-</html>
-<!-- @click="searchPlaces" -->

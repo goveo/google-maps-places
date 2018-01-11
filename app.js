@@ -14,25 +14,66 @@ var app = new Vue({
         initMap: function () {
             this.map = new google.maps.Map(document.getElementById('map'), {
                 center: this.pyrmont,
-                zoom: 17
+                zoom: 17,
+                mapTypeId: 'roadmap'
             });
-            this.service = new google.maps.places.PlacesService(this.map);
 
-            google.maps.event.addListener(this.map, 'click', function (event) {
-                app.searchPlaces(event);
+            var input = document.getElementById('pac-input');
+            var searchBox = new google.maps.places.SearchBox(input);
+            this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+            this.map.addListener('bounds_changed', function () {
+                searchBox.setBounds(app.map.getBounds());
+            });
+            searchBox.addListener('places_changed', function () {
+                var places = searchBox.getPlaces();
+                app.changePlaces(places);
+                console.log('place changed');
             });
         },
-        searchPlaces: function (event) {
-            let lat = event.latLng.lat();
-            let lng = event.latLng.lng();
-            this.service.nearbySearch({
-                location: {
-                    lat,
-                    lng
-                },
-                radius: 500,
-                type: ['cafe']
-            }, this.processResults);
+        changePlaces: function (places) {
+            if (places.length == 0) {
+                return;
+            }
+            app.deleteAllMarkers();
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+                let marker = new google.maps.Marker({
+                    map: app.map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                });
+                app.markers.push(marker);
+
+                app.placesList.push({
+                    position: place.geometry.location,
+                    name: place.name
+                });
+                
+                marker.addListener('click', function() {
+                    app.map.setCenter(marker.getPosition());
+                    alert('Modal window with ' + place.name);
+                  });
+
+                if (place.geometry.viewport) {
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            app.map.fitBounds(bounds);
         },
         processResults: function (results, status, pagination) {
             if (status !== google.maps.places.PlacesServiceStatus.OK) {
@@ -43,13 +84,13 @@ var app = new Vue({
             }
         },
         createMarkers: function (places) {
-            this.placesList = []; // null
+            app.placesList = []; // null
             console.log('placesList : ', this.placesList);
 
             var bounds = new google.maps.LatLngBounds();
 
             var placesListEl = document.getElementById('places');
-            
+
             for (var i = 0, place; place = places[i]; i++) {
                 var image = {
                     url: place.icon,
@@ -65,15 +106,20 @@ var app = new Vue({
                     title: place.name,
                     position: place.geometry.location
                 });
-                let currnetPlace = {
+                let currentPlace = {
                     position: place.geometry.location,
                     name: place.name
                 }
 
-                this.markers.push(marker);
-                this.placesList.push(currnetPlace);
+                marker.addListener('click', function () {
+                    app.map.setCenter(marker.getPosition());
+                    alert(`do you wanna add ${currentPlace.name} ?`);
+                    // process info about place
+                    myPlaces.push(currentPlace);
+                });
 
-                // placesListEl.innerHTML += '<li>' + place.name + '</li>';
+                this.markers.push(marker);
+                app.placesList.push(currentPlace);
 
                 bounds.extend(place.geometry.location);
             }
