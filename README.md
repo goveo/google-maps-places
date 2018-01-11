@@ -1,1 +1,1 @@
-# example for place google place search in vue
+# example for google places search in vue
