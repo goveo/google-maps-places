@@ -20,23 +20,30 @@ var app = new Vue({
             });
 
             var input = document.getElementById('pac-input');
+
             var searchBox = new google.maps.places.SearchBox(input);
             this.bounds = new google.maps.LatLngBounds();
             this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
             this.map.addListener('bounds_changed', function () {
-                console.log('bounds changed');
                 searchBox.setBounds(app.map.getBounds());
             });
+
             searchBox.addListener('places_changed', function () {
                 var places = searchBox.getPlaces();
                 if (places.length != 0) {
-                    app.changePlace(places[0]); //beacause all of places in search are unique
-                    console.log('place changed');
+                    let place = places[0];
+                    if (place.types[0] == 'cafe') {
+                        app.changePlace(place); //beacause all of places in search are unique
+                        console.log('place changed');
+                    } else {
+                        alert("it is not cafe");
+                    }
                 }
             });
         },
         changePlace: function (place) {
+            console.log(place);
             app.deleteAllMarkers();
             app.addPlaceOnMap(place);
             app.map.fitBounds(app.bounds);
