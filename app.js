@@ -73,7 +73,7 @@ var app = new Vue({
             
             marker.addListener('click', function () {
                 app.map.setCenter(marker.getPosition());
-                alert('Modal window with ' + place.name);
+                app.addNewCafe(place);
             });
             app.markers.push(marker);
 
@@ -82,6 +82,10 @@ var app = new Vue({
             } else {
                 app.bounds.extend(place.geometry.location);
             }
+        },
+        addNewCafe: function (place) {
+            console.log('add new place here');
+            alert('Modal window with ' + place.name);            
         },
         setMapOnAll: function (map) {
             for (var i = 0; i < this.markers.length; i++) {
